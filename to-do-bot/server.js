@@ -4,33 +4,55 @@ const MessagingResponse = require('twilio').twiml.MessagingResponse;
 const bodyParser = require('body-parser');
 const app = express();
 
-//Potentially convert between text as numbered list and array
-const list = [];
+//Defines global message variables
+let outgoingArray = [];
+let outgoingMessage = [];
+let toDoList = ''
 
-//write function to remove item from list based on number given by user
+//Formats todo list to return to user
+function formatAray(){
+  for(i = 0; i < outgoingArray.length; i++) {
+    outgoingMessage.push((i+1) + '. ' + outgoingArray[i] + '\n');
+  }
+  toDoList =  'Here is what you need to do today: \n' + outgoingMessage.join('');
+}
+//Adds a new item to the todo list
+function addItem (newItem){
+  outgoingMessage = [];
+  toDoList = ''
+  outgoingArray.push(newItem);
+  formatAray();
+}
+//Removes item from list based on number given by user
 function removeItem(number) {
-
-};
+  outgoingMessage = [];
+  toDoList = ''
+  outgoingArray.splice(number - 1, 1)
+  formatAray();
+}
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.post('/sms', (req, res) => {
   const twiml = new MessagingResponse();
+  const incomingArray = req.body.Body.split(' ');
 
-  //Specify first word in if statement and rest of body to be added to list 
-  if (req.body.Body ==="add") {
-    list.push(req.body.Body)
-  twiml.message(list);
+//Adds todo item to list and returns numbered list 
+    if (incomingArray[0] === "add") {
+      const textBody = incomingArray.slice(1).join(' ');
+      addItem(textBody);
+      twiml.message(toDoList);
+  }
+  
+//Returns todo list
+else if (incomingArray[0] === "list") {
+  twiml.message(toDoList);
 }
 
-//Specify first word in if statement and potentially change between aray and text here
-else if (req.body.Body ==="list") {
-  twiml.message(list);
-}
-//Specify first word in if and change req.body.Number to be a real thing
-else if (req.body.Body ==="remove") {
-  removeItem(req.body.Number);
-  twiml.message(list);
+//Removes item from todo list based on user input
+else if (incomingArray[0] ==="remove") {
+  removeItem(incomingArray[1]);
+  twiml.message(toDoList);
 }
 
   res.writeHead(200, {'Content-Type': 'text/xml'});
