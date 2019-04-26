@@ -1,5 +1,5 @@
 <h2>Twilio</h2>
-<p>This is a repository for the local missions in TwilioQuest<br>
+<p>This is a repository for the local missions in TwilioQuest,<br>
  <a href="https://www.twilio.com/quest/missions">https://www.twilio.com/quest/missions</a></p>
 
 <h4>Build Using:</h4>
