@@ -38,21 +38,29 @@ app.post('/sms', (req, res) => {
   const incomingArray = req.body.Body.split(' ');
 
 //Adds todo item to list and returns numbered list 
-    if (incomingArray[0] === "add") {
+    if (incomingArray[0] === "Add") {
       const textBody = incomingArray.slice(1).join(' ');
       addItem(textBody);
       twiml.message(toDoList);
   }
-  
-//Returns todo list
-else if (incomingArray[0] === "list") {
+
+//Removes item from todo list based on user input
+else if (incomingArray[0] ==="Remove") {
+  removeItem(incomingArray[1]);
   twiml.message(toDoList);
 }
 
-//Removes item from todo list based on user input
-else if (incomingArray[0] ==="remove") {
-  removeItem(incomingArray[1]);
+//Returns todo list
+else if (incomingArray[0] === "List") {
   twiml.message(toDoList);
+}
+
+else {
+  twiml.message(`Sorry, I didn't understand. I am but a simple bot. Try one of these 3 commands instead. \n
+  "Add [text you would like to add]" \n
+  "Remove [number of list item you would like to remove]" \n
+  "List" - Returns your todo list
+  `);
 }
 
   res.writeHead(200, {'Content-Type': 'text/xml'});
