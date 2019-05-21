@@ -70,3 +70,15 @@ else {
 http.createServer(app).listen(80, () => {
   console.log('Express server listening on port 80');
 });
+
+/*app.post('/status', (req, res) => {
+  const MessagingResponse = require('twilio').twiml.MessagingResponse;
+
+const response = new MessagingResponse();
+response.message({
+    action: '/SmsHandler.php',
+    method: 'POST'
+}, 'delivered');
+
+console.log(response.toString());
+});*/
